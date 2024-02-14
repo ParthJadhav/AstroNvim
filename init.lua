@@ -22,3 +22,5 @@ end
 
 require("astronvim.utils").conditional_func(astronvim.user_opts("polish", nil, false), true)
 
+vim.api.nvim_set_option("foldcolumn", "0")
+vim.api.nvim_set_option("numberwidth", 1)
