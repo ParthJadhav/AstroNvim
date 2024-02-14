@@ -20,6 +20,9 @@ local sections = {
 }
 
 -- Normal --
+maps.n['W'] = { ":HopWord<cr>", silent = true }
+maps.n['L'] = { ":HopLine<cr>", silent = true }
+
 -- Standard Operations
 maps.n["j"] = { "v:count == 0 ? 'gj' : 'j'", expr = true, desc = "Move cursor down" }
 maps.n["k"] = { "v:count == 0 ? 'gk' : 'k'", expr = true, desc = "Move cursor up" }
@@ -48,9 +51,11 @@ maps.n["<leader>pA"] = { "<cmd>AstroUpdate<cr>", desc = "AstroNvim Update" }
 maps.n["<leader>pv"] = { "<cmd>AstroVersion<cr>", desc = "AstroNvim Version" }
 maps.n["<leader>pl"] = { "<cmd>AstroChangelog<cr>", desc = "AstroNvim Changelog" }
 
+
 -- Manage Buffers
 maps.n["<leader>c"] = { function() require("astronvim.utils.buffer").close() end, desc = "Close buffer" }
 maps.n["<leader>C"] = { function() require("astronvim.utils.buffer").close(0, true) end, desc = "Force close buffer" }
+
 maps.n["]b"] =
   { function() require("astronvim.utils.buffer").nav(vim.v.count > 0 and vim.v.count or 1) end, desc = "Next buffer" }
 maps.n["[b"] = {
@@ -67,9 +72,8 @@ maps.n["<b"] = {
 }
 
 maps.n["<leader>b"] = sections.b
-maps.n["<leader>bc"] =
+maps.n["<leader>bC"] =
   { function() require("astronvim.utils.buffer").close_all(true) end, desc = "Close all buffers except current" }
-maps.n["<leader>bC"] = { function() require("astronvim.utils.buffer").close_all() end, desc = "Close all buffers" }
 maps.n["<leader>bl"] =
   { function() require("astronvim.utils.buffer").close_left() end, desc = "Close all buffers to the left" }
 maps.n["<leader>bp"] = { function() require("astronvim.utils.buffer").prev() end, desc = "Previous buffer" }
@@ -83,40 +87,11 @@ maps.n["<leader>bsp"] = { function() require("astronvim.utils.buffer").sort "ful
 maps.n["<leader>bsi"] = { function() require("astronvim.utils.buffer").sort "bufnr" end, desc = "By buffer number" }
 maps.n["<leader>bsm"] = { function() require("astronvim.utils.buffer").sort "modified" end, desc = "By modification" }
 
-if is_available "heirline.nvim" then
-  maps.n["<leader>bb"] = {
-    function()
-      require("astronvim.utils.status.heirline").buffer_picker(function(bufnr) vim.api.nvim_win_set_buf(0, bufnr) end)
-    end,
-    desc = "Select buffer from tabline",
-  }
-  maps.n["<leader>bd"] = {
-    function()
-      require("astronvim.utils.status.heirline").buffer_picker(
-        function(bufnr) require("astronvim.utils.buffer").close(bufnr) end
-      )
-    end,
-    desc = "Close buffer from tabline",
-  }
-  maps.n["<leader>b\\"] = {
-    function()
-      require("astronvim.utils.status.heirline").buffer_picker(function(bufnr)
-        vim.cmd.split()
-        vim.api.nvim_win_set_buf(0, bufnr)
-      end)
-    end,
-    desc = "Horizontal split buffer from tabline",
-  }
-  maps.n["<leader>b|"] = {
-    function()
-      require("astronvim.utils.status.heirline").buffer_picker(function(bufnr)
-        vim.cmd.vsplit()
-        vim.api.nvim_win_set_buf(0, bufnr)
-      end)
-    end,
-    desc = "Vertical split buffer from tabline",
-  }
-end
+maps.n["<leader>bf"] = { "<cmd>BufferLinePick<cr>", desc = "jump to buffer" }
+maps.n["<leader>bc"] = { ":bd<CR>", desc = "Close Buffer" }
+maps.n["<leader>bk"] = { "<cmd>BufferLinePickClose<cr>", desc = "Close pick" }
+maps.n["<leader>bb"] = { "<cmd>BufferLineCyclePrev<cr>", desc = "Previous Buffer" }
+maps.n["<leader>bn"] = { "<cmd>BufferLineCycleNext<cr>", desc = "Next Buffer" }
 
 -- Navigate tabs
 maps.n["]t"] = { function() vim.cmd.tabnext() end, desc = "Next tab" }
@@ -251,11 +226,11 @@ if is_available "telescope.nvim" then
   }
   maps.n["<leader>gt"] =
     { function() require("telescope.builtin").git_status { use_file_path = true } end, desc = "Git status" }
-  maps.n["<leader>f<CR>"] = { function() require("telescope.builtin").resume() end, desc = "Resume previous search" }
-  maps.n["<leader>f'"] = { function() require("telescope.builtin").marks() end, desc = "Find marks" }
-  maps.n["<leader>f/"] =
+  maps.n["<leader>s<CR>"] = { function() require("telescope.builtin").resume() end, desc = "Resume previous search" }
+  maps.n["<leader>s'"] = { function() require("telescope.builtin").marks() end, desc = "Find marks" }
+  maps.n["<leader>s/"] =
     { function() require("telescope.builtin").current_buffer_fuzzy_find() end, desc = "Find words in current buffer" }
-  maps.n["<leader>fa"] = {
+  maps.n["<leader>sa"] = {
     function()
       local cwd = vim.fn.stdpath "config" .. "/.."
       local search_dirs = {}
@@ -277,29 +252,27 @@ if is_available "telescope.nvim" then
     end,
     desc = "Find AstroNvim config files",
   }
-  maps.n["<leader>fb"] = { function() require("telescope.builtin").buffers() end, desc = "Find buffers" }
-  maps.n["<leader>fc"] = { function() require("telescope.builtin").grep_string() end, desc = "Find word under cursor" }
-  maps.n["<leader>fC"] = { function() require("telescope.builtin").commands() end, desc = "Find commands" }
-  maps.n["<leader>ff"] = { function() require("telescope.builtin").find_files() end, desc = "Find files" }
-  maps.n["<leader>fF"] = {
+  maps.n["<leader>sb"] = { function() require("telescope.builtin").buffers() end, desc = "Find buffers" }
+  maps.n["<leader>sC"] = { function() require("telescope.builtin").commands() end, desc = "Find commands" }
+  maps.n["<leader>f"] = { function() require("telescope.builtin").find_files() end, desc = "Find files" }
+  maps.n["<leader>sf"] = { function() require("telescope.builtin").find_files() end, desc = "Find files" }
+  maps.n["<leader>sF"] = {
     function() require("telescope.builtin").find_files { hidden = true, no_ignore = true } end,
     desc = "Find all files",
   }
-  maps.n["<leader>fh"] = { function() require("telescope.builtin").help_tags() end, desc = "Find help" }
-  maps.n["<leader>fk"] = { function() require("telescope.builtin").keymaps() end, desc = "Find keymaps" }
-  maps.n["<leader>fm"] = { function() require("telescope.builtin").man_pages() end, desc = "Find man" }
+  maps.n["<leader>sh"] = { function() require("telescope.builtin").help_tags() end, desc = "Find help" }
+  maps.n["<leader>sk"] = { function() require("telescope.builtin").keymaps() end, desc = "Find keymaps" }
+  maps.n["<leader>sm"] = { function() require("telescope.builtin").man_pages() end, desc = "Find man" }
   if is_available "nvim-notify" then
-    maps.n["<leader>fn"] =
+    maps.n["<leader>sn"] =
       { function() require("telescope").extensions.notify.notify() end, desc = "Find notifications" }
     maps.n["<leader>uD"] =
       { function() require("notify").dismiss { pending = true, silent = true } end, desc = "Dismiss notifications" }
   end
-  maps.n["<leader>fo"] = { function() require("telescope.builtin").oldfiles() end, desc = "Find history" }
-  maps.n["<leader>fr"] = { function() require("telescope.builtin").registers() end, desc = "Find registers" }
-  maps.n["<leader>ft"] =
-    { function() require("telescope.builtin").colorscheme { enable_preview = true } end, desc = "Find themes" }
-  maps.n["<leader>fw"] = { function() require("telescope.builtin").live_grep() end, desc = "Find words" }
-  maps.n["<leader>fW"] = {
+  maps.n["<leader>so"] = { function() require("telescope.builtin").oldfiles() end, desc = "Find history" }
+  maps.n["<leader>sr"] = { function() require("telescope.builtin").registers() end, desc = "Find registers" }
+  maps.n["<leader>st"] = { function() require("telescope.builtin").live_grep() end, desc = "Find words" }
+  maps.n["<leader>sW"] = {
     function()
       require("telescope.builtin").live_grep {
         additional_args = function(args) return vim.list_extend(args, { "--hidden", "--no-ignore" }) end,
