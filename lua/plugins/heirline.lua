@@ -1,41 +1,72 @@
+local function lsp_clients()
+  return require("lsp-progress").progress {
+    max_size = 60,
+    format = function(messages)
+      local active_clients = vim.lsp.get_active_clients()
+      if #messages > 0 then return "" .. table.concat(messages, ", ") end
+      local client_names = {}
+      for i, client in ipairs(active_clients) do
+        if client and client.name ~= "" then table.insert(client_names, "" .. client.name .. "") end
+      end
+      return "" .. table.concat(client_names, ", ")
+    end,
+  }
+end
+
 return {
-  "rebelot/heirline.nvim",
-  event = "BufEnter",
-  opts = function()
-    local status = require "astronvim.utils.status"
-    return {
-      opts = {
-        disable_winbar_cb = function(args)
-          return not require("astronvim.utils.buffer").is_valid(args.buf)
-            or status.condition.buffer_matches({
-              buftype = { "terminal", "prompt", "nofile", "help", "quickfix" },
-              filetype = { "NvimTree", "neo%-tree", "dashboard", "Outline", "aerial" },
-            }, args.buf)
-        end,
+  {
+    "linrongbin16/lsp-progress.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    config = function() require("lsp-progress").setup() end,
+  },
+  {
+    event = "VeryLazy",
+    "nvim-lualine/lualine.nvim",
+    dependencies = {
+      "nvim-tree/nvim-web-devicons",
+      "linrongbin16/lsp-progress.nvim",
+    },
+    opts = {
+      options = {
+        theme = "auto",
+        globalstatus = true,
+        component_separators = "|",
+        section_separators = { left = "", right = "" },
       },
-      statusline = { -- statusline
-        hl = { fg = "fg", bg = "bg" },
-        status.component.mode(),
-        status.component.git_branch(),
-        status.component.file_info { filetype = {}, filename = false, file_modified = false },
-        status.component.git_diff(),
-        status.component.diagnostics(),
-        status.component.fill(),
-        status.component.cmd_info(),
-        status.component.fill(),
-        status.component.lsp(),
-        status.component.treesitter(),
-        status.component.mode { surround = { separator = "right" } },
+      sections = {
+        lualine_a = { { "mode", separator = { left = "" }, right_padding = 2 } },
+        lualine_b = {
+          "branch",
+          { "diff", symbols = { added = " ", modified = "柳 ", removed = " " } },
+          {
+            "diagnostics",
+            sources = { "nvim_diagnostic" },
+            symbols = { error = " ", warn = " ", info = " " },
+          },
+        },
+        lualine_c = { "" },
+        lualine_x = { lsp_clients, "filetype" },
+        lualine_y = { "" },
+        lualine_z = { { "location", separator = { right = "" }, left_padding = 2 } },
       },
-      
-      statuscolumn = vim.fn.has "nvim-0.9" == 1 and {
-        init = function(self) self.bufnr = vim.api.nvim_get_current_buf() end,
-        status.component.foldcolumn(),
-        status.component.fill(),
-        status.component.numbercolumn(),
-        status.component.signcolumn(),
-      } or nil,
-    }
-  end,
-  config = require "plugins.configs.heirline",
+      inactive_sections = {
+        lualine_a = {},
+        lualine_v = {},
+        lualine_y = {},
+        lualine_z = {},
+        lualine_c = {},
+        lualine_x = {},
+      },
+    },
+    config = function(_, opts)
+      require("lualine").setup(opts)
+      -- listen lsp-progress event and refresh lualine
+      vim.api.nvim_create_augroup("lualine_augroup", { clear = true })
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "LspProgressStatusUpdated",
+        group = "lualine_augroup",
+        callback = require("lualine").refresh,
+      })
+    end,
+  },
 }
