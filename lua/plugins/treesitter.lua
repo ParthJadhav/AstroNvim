@@ -41,6 +41,7 @@ return {
         "bash",
         "c",
         "tsx",
+        "prisma",
         "lua",
         "markdown",
         "markdown_inline",
