@@ -31,6 +31,11 @@ return {
           n = { q = actions.close },
         },
       },
+      pickers = {
+        colorscheme = {
+          enable_preview = true,
+        },
+      },
     }
   end,
   config = require "plugins.configs.telescope",

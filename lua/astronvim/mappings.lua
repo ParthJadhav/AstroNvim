@@ -20,8 +20,8 @@ local sections = {
 }
 
 -- Normal --
-maps.n['W'] = { ":HopWord<cr>", silent = true }
-maps.n['L'] = { ":HopLine<cr>", silent = true }
+maps.n["W"] = { ":HopWord<cr>", silent = true }
+maps.n["L"] = { ":HopLine<cr>", silent = true }
 
 -- Standard Operations
 maps.n["j"] = { "v:count == 0 ? 'gj' : 'j'", expr = true, desc = "Move cursor down" }
@@ -50,7 +50,6 @@ maps.n["<leader>pa"] = { "<cmd>AstroUpdatePackages<cr>", desc = "Update Plugins 
 maps.n["<leader>pA"] = { "<cmd>AstroUpdate<cr>", desc = "AstroNvim Update" }
 maps.n["<leader>pv"] = { "<cmd>AstroVersion<cr>", desc = "AstroNvim Version" }
 maps.n["<leader>pl"] = { "<cmd>AstroChangelog<cr>", desc = "AstroNvim Changelog" }
-
 
 -- Manage Buffers
 maps.n["<leader>c"] = { function() require("astronvim.utils.buffer").close() end, desc = "Close buffer" }
@@ -254,6 +253,7 @@ if is_available "telescope.nvim" then
   }
   maps.n["<leader>sb"] = { function() require("telescope.builtin").buffers() end, desc = "Find buffers" }
   maps.n["<leader>sC"] = { function() require("telescope.builtin").commands() end, desc = "Find commands" }
+  maps.n["<leader>sc"] = { function() require("telescope.builtin").colorscheme() end, desc = "Find colorscheme" }
   maps.n["<leader>f"] = { function() require("telescope.builtin").find_files() end, desc = "Find files" }
   maps.n["<leader>sf"] = { function() require("telescope.builtin").find_files() end, desc = "Find files" }
   maps.n["<leader>sF"] = {

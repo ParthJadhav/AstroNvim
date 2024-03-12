@@ -104,7 +104,7 @@ return {
     end,
   },
   {
-    'akinsho/toggleterm.nvim',
+    "akinsho/toggleterm.nvim",
     lazy = false,
     version = "*",
     config = function()
@@ -129,5 +129,5 @@ return {
         },
       }
     end,
-  },  
+  },
 }
