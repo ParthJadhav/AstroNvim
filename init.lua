@@ -24,16 +24,15 @@ require("astronvim.utils").conditional_func(astronvim.user_opts("polish", nil, f
 
 vim.api.nvim_set_option("foldcolumn", "0")
 vim.api.nvim_set_option("numberwidth", 1)
+vim.api.nvim_set_keymap("", "<D-v>", "+p<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("!", "<D-v>", "<C-R>+", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("t", "<D-v>", "<C-R>+", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("v", "<D-v>", "<C-R>+", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("t", "<D-v>", '<C-\\><C-o>"+p', { noremap = true, silent = true })
 
 if vim.g.neovide then
   vim.o.guifont = "FiraCode Nerd Font Mono:h15.4"
-
   vim.g.neovide_input_use_logo = 1
-  vim.api.nvim_set_keymap("", "<D-v>", "+p<CR>", { noremap = true, silent = true })
-  vim.api.nvim_set_keymap("!", "<D-v>", "<C-R>+", { noremap = true, silent = true })
-  vim.api.nvim_set_keymap("t", "<D-v>", "<C-R>+", { noremap = true, silent = true })
-  vim.api.nvim_set_keymap("v", "<D-v>", "<C-R>+", { noremap = true, silent = true })
-  vim.api.nvim_set_keymap("t", "<D-v>", '<C-\\><C-o>"+p', { noremap = true, silent = true })
   vim.g.neovide_transparency = 0.99
   vim.g.neovide_window_blurred = true
   vim.g.neovide_hide_mouse_when_typing = true
