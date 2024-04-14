@@ -402,6 +402,8 @@ M.capabilities.textDocument.foldingRange = { dynamicRegistration = false, lineFo
 M.capabilities = user_opts("lsp.capabilities", M.capabilities)
 M.flags = user_opts "lsp.flags"
 
+require("lspconfig").biome.setup {}
+
 --- Get the server configuration for a given language server to be provided to the server's `setup()` call
 ---@param server_name string The name of the server
 ---@return table # The table of LSP options used when setting up the given language server
