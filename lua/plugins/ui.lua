@@ -53,6 +53,7 @@ return {
     "rcarriga/nvim-notify",
     lazy = true,
     init = function() require("astronvim.utils").load_plugin_with_func("nvim-notify", vim, "notify") end,
+    enabled = false,
     opts = {
       on_open = function(win)
         vim.api.nvim_win_set_config(win, { zindex = 175 })
